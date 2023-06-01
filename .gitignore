@@ -1,0 +1,5 @@
+api_details.env
+credentials.py
+canteen_bot_details.txt
+*.pyc
+bot_files/__pycache__/
