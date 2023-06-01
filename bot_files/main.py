@@ -46,17 +46,17 @@ def show_menu(message):
 
     keyboard = types.InlineKeyboardMarkup()
 
-    maggie_button = types.InlineKeyboardButton('Maggie', callback_data='Maggie')
+    maggie_button = types.InlineKeyboardButton('Maggie 🍜', callback_data='Maggie')
 
-    pulao_button = types.InlineKeyboardButton('Pulao', callback_data='Pulao')
+    pulao_button = types.InlineKeyboardButton('Pulao 🍛', callback_data='Pulao')
 
-    ande_ka_funda_button = types.InlineKeyboardButton('Ande ka funda', callback_data='Ande ka funda')
+    ande_ka_funda_button = types.InlineKeyboardButton('Ande ka funda 🍳', callback_data='Ande ka funda')
 
-    paratha_button = types.InlineKeyboardButton('Paratha', callback_data='Paratha')
+    paratha_button = types.InlineKeyboardButton('Paratha 🫓', callback_data='Paratha')
 
-    hot_drink_button = types.InlineKeyboardButton('Hot drink', callback_data='Hot drink')
+    hot_drink_button = types.InlineKeyboardButton('Hot drink ☕️', callback_data='Hot drink')
 
-    cold_drink_button = types.InlineKeyboardButton('Cold drink', callback_data='Cold drink')
+    cold_drink_button = types.InlineKeyboardButton('Cold drink 🍹', callback_data='Cold drink')
     
     keyboard.add(maggie_button, pulao_button,) 
     keyboard.add(ande_ka_funda_button, paratha_button,)
@@ -96,19 +96,37 @@ def callback_handler(call):
             #     print(item)
 
             for button in buttons:
-                new_keyboard.add(button) 
+                new_keyboard.add(button)
+                print(button.callback_data)
 
             canteen_bot.reply_to(call.message, text=f'😋 Items in the category: {call.data} 😋', reply_markup=new_keyboard) 
 
 
-            callback_handler(call.data)
+            # print(button.callback_data)
+
+
 
             # show_submenu(call.data)
             
 
 @canteen_bot.callback_query_handler(func=lambda call: True)
 def final_order_handler(call):
-    print(call.data)
+    # print(call.data)
+
+    conditions = [
+        call.data in MENU['Maggie'],
+        call.data in MENU['Pulao'],
+        call.data in MENU['Ande ka funda'],
+        call.data in MENU['Paratha'],
+        call.data in MENU['Hot drink'],
+        call.data in MENU['Cold drink']
+    ]
+
+    if call.message:
+
+        if any(conditions):
+            canteen_bot.answer_callback_query(callback_query_id=call.id)
+            print(call.data)
             
 
 
