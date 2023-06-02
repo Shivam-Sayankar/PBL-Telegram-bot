@@ -2,13 +2,14 @@ import os
 import telebot
 from telebot import types
 from credentials import API_TOKEN
-from data import MENU
+from data import MENU, COMPLETE_MENU
 
 # API_TOKEN = os.environ['BOT_TOKEN']
 
 CHAT_ID = 1021725608
 
 commands = ['start','hello', 'menu', 'help', 'get_price']
+buttons = []
 
 help_text = '''
 Here are the commands that can help you place your order:
@@ -68,7 +69,7 @@ def show_menu(message):
 
 
 @canteen_bot.message_handler(func=lambda msg: True)
-def echo_all(message):
+def reply_to_all(message):
     if message.text not in commands:
         canteen_bot.reply_to(message, f'Invalid command')
         canteen_bot.reply_to(message, f'{help_text}')
@@ -78,6 +79,7 @@ def echo_all(message):
 
 @canteen_bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
+    global buttons
     # Check if the callback is from an inline button
     if call.message:
         # Check the data of the button that was pressed
@@ -88,7 +90,7 @@ def callback_handler(call):
 
             # def show_submenu(category):
             new_keyboard = types.InlineKeyboardMarkup()
-            buttons = [types.InlineKeyboardButton(f" {item} | ₹{MENU[call.data][item]}/- ", callback_data=item) for item in MENU[call.data] ]
+            buttons = [types.InlineKeyboardButton(f"{item} | ₹{MENU[call.data][item]}/-", callback_data=item) for item in MENU[call.data] ]
 
             # for item in MENU[call.data]:
             #     types.InlineKeyboardButton(MENU[call.data][item], callback_data=MENU[call.data][item])
@@ -97,7 +99,10 @@ def callback_handler(call):
 
             for button in buttons:
                 new_keyboard.add(button)
-                print(button.callback_data)
+                # print(button.callback_data) ####
+
+                # if button.callback_data == 'Veg pulao':
+                #     print('How many veg pulao do you want?')
 
             canteen_bot.reply_to(call.message, text=f'😋 Items in the category: {call.data} 😋', reply_markup=new_keyboard) 
 
@@ -107,13 +112,39 @@ def callback_handler(call):
 
 
             # show_submenu(call.data)
-            
 
+
+def button_handler(message, button_data):
+    global price
+    # Your code here
+    # if button_data == "BUTTON_1":
+    #     # Action for Button 1
+    # elif button_data == "BUTTON_2":
+    #     # Action for Button 2
+    for item in COMPLETE_MENU:
+        if COMPLETE_MENU[button_data] == COMPLETE_MENU[item]:
+            canteen_bot.reply_to(message, f'How many {button_data} do you want to order?')
+            price += COMPLETE_MENU[item]
+            print(price)
+
+
+@canteen_bot.callback_query_handler(func=lambda call: True)
+def item_button_handler(call):
+    # Check if the callback is from an inline button
+    if call.message:
+        # Check the data of the button that was pressed
+        button_data = call.data
+        button_handler(call.message, button_data)
+
+
+'''
 @canteen_bot.callback_query_handler(func=lambda call: True)
 def final_order_handler(call):
     # print(call.data)
+    if call.message:
 
-    conditions = [
+        conditions = [
+
         call.data in MENU['Maggie'],
         call.data in MENU['Pulao'],
         call.data in MENU['Ande ka funda'],
@@ -122,13 +153,21 @@ def final_order_handler(call):
         call.data in MENU['Cold drink']
     ]
 
-    if call.message:
-
-        if any(conditions):
+        if call.data in COMPLETE_MENU:#:any(conditions):
             canteen_bot.answer_callback_query(callback_query_id=call.id)
             print(call.data)
+
+            # price = COMPLETE_MENU[call.data]
+            # print(price)
+
+            for button in buttons:
+                if COMPLETE_MENU[call.data] == button.callback_data:
+                    price = COMPLETE_MENU[call.data]
             
-
-
+            print(price)
+         # Check the data of the button that was pressed
+        button_data = call.data
+        any(conditions)
+'''
 
 canteen_bot.infinity_polling()

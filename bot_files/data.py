@@ -76,8 +76,8 @@ MENU = {
 }
 
 
-'''
-MENU = {
+
+COMPLETE_MENU = {
 'Tea' : 10,
 'Coffee' : 15,
 'Pohe' : 15,
@@ -110,4 +110,3 @@ MENU = {
 'Gobi Paratha' : 50,
 }
 
-'''
