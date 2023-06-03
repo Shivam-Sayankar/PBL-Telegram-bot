@@ -5,7 +5,7 @@ MENU = {
 
         'Plain maggie' : 30,
         'Masala maggie' : 45,
-        'Butter Maggie' : 40,
+        'Butter maggie' : 40,
         'Schezwan maggie' : 40,
         'Anda maggie' : 50,
         'Anda schezwan maggie' : 60,
@@ -28,23 +28,24 @@ MENU = {
 
     'Ande ka funda' : {
 
-        'Plane omelette' :40,
-        'Bun omelette' :50,
-        'Bread omelette ':50,
-        'Half fry':40,
-        'French toast':50,
-        'Egg bhurji':50,
-        'Anda rice':60,
-        'Boiled fry':50,
-        'Boiled (2 peices)':20,
-        'Extra pav':10,
-        'Extra cheese':20,
+        'Plain omelet' : 40,
+        'Bun omelet' : 50,
+        'Bread omelet ': 50,
+        'Half fry': 40,
+        'French toast': 50,
+        'Egg bhurji' : 50,
+        'Anda rice' : 60,
+        'Boiled fry' : 50,
+        'Boiled (2 peices)' : 20,
+        'Extra pav' : 10,
+        'Extra cheese' : 20,
     },
 
 
     'Paratha' : {
+
         'Aaloo Paratha' : 50,
-        'Panir Paratha' : 70,
+        'Paneer Paratha' : 70,
         'Gobi Paratha' : 50,
         'Methi Paratha' : 60,
         'Green Peas Paratha' : 50,
@@ -56,21 +57,23 @@ MENU = {
 
 
     'Hot drink' : {
+
         'Hot Coffee' : 15,
         'Hot Chocolate' : 40,
         'Hot Bornvita' : 35,
         'Hot Milk' : 20,
-        'Hot Termeric Milk' : 35
+        'Hot Turmeric Milk' : 35
     },
 
 
     'Cold drink' : {
-        'Cold coffee ':25,
-        'Cold bornvita':40,
-        'Thick coffee ':40,
-        'Lassi':30,
-        'Nimbu pani':20,
-        'Taak':25
+
+        'Cold coffee ' : 25,
+        'Cold bornvita' : 40,
+        'Thick coffee ' : 40,
+        'Lassi' : 30,
+        'Nimbu pani' : 20,
+        'Chhach/Taak' : 25
     }
 
 }
