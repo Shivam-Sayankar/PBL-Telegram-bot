@@ -3,3 +3,5 @@ credentials.py
 canteen_bot_details.txt
 *.pyc
 bot_files/__pycache__/
+temp.py
+demo code.py
