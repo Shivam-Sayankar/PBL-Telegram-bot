@@ -2,12 +2,16 @@ import telebot
 from telebot import types
 from data import MENU, COMPLETE_MENU
 from credentials import API_TOKEN
+import json
+import time
 
 # Create a new instance of the telebot.Bot class
 canteen_bot = telebot.TeleBot(API_TOKEN)
 
 current_category = ''
 item_selected = ''
+user_order_details = {}
+order_placed = False
 
 @canteen_bot.message_handler(commands=['menu'])
 def show_menu_categories(message):
@@ -38,7 +42,7 @@ def show_menu_categories(message):
 @canteen_bot.message_handler(func=lambda msg: True)
 def show_menu(message):
 
-    global current_category, item_selected
+    global item_selected, user_order_details
 
     user_message = message.text.strip('🍜🍛🍳 🫓☕️🍹')
 
@@ -76,10 +80,55 @@ def show_menu(message):
         items_markup.add(*items)
         canteen_bot.reply_to(message, text=f'How many {user_message}s would you like to order?', reply_markup=items_markup)
 
-    if user_message.isnumeric:
+    elif user_message.isnumeric:
+
+        num_of_items = int(user_message)
+
         print(f'do you want to order {user_message} {item_selected}s?')
         print(message.chat.id)
+        print(message.chat.username)
+
+        canteen_bot.reply_to(message, text=f'Do you want to add more items?')
+        canteen_bot.reply_to(message, text=f'Or is this your final order?')
+
+        items = [
+            types.KeyboardButton('Add more items'),
+            types.KeyboardButton('This is my final order'),
+        ]
+    
+        items_markup.add(*items)
+        canteen_bot.reply_to(message, text=f'What would like to do?', reply_markup=items_markup)
+
+        user_order_details = {
+            'timestamp': time.time(),
+            'chat_id': message.chat.id,
+            'dish' : item_selected,
+            'number of dishes': num_of_items,
+        }
+
+        print(f"{num_of_items} * {COMPLETE_MENU[item_selected]} {num_of_items*COMPLETE_MENU[item_selected]}")
+        
+        with open('order_details.json', 'a+') as file:
+            try:
+                # data = json.load(file)
+                # print(data)
+                json.dump(user_order_details, file, indent=4)
+                data = json.load(file)
+                print(data)
+
+            except Exception as e:
+                print(e)
+
+
+    elif user_message == 'Add more items':
+        show_menu(message)
+        pass
+
+    elif user_message == 'This is my final order':
+        print(f'your final bill is:\
+              {num_of_items}')
 
 
 
-canteen_bot.infinity_polling()
+
+canteen_bot.polling()
