@@ -13,7 +13,7 @@ item_selected = ''
 user_order_details = {}
 user_message = ''
 order_placed = False
-current_order = []
+current_order = {}
 current_bill = 0
 
 help_text = '''
@@ -62,13 +62,10 @@ def show_menu_categories(message):
 @canteen_bot.message_handler(func=lambda msg: True)
 def show_menu(message):
 
-    global item_selected, user_order_details, current_bill
+    global item_selected, user_order_details, current_bill, num_of_items, order_placed
     #user_message
 
     user_message = message.text.strip('🍜🍛🍳 🫓☕️🍹')
-
-    current_category = user_message
-    # print(category_title)
 
     items_markup = types.ReplyKeyboardMarkup()
 
@@ -119,23 +116,67 @@ def show_menu(message):
         items_markup.add(*items)
         canteen_bot.reply_to(message, text=f'What would like to do?', reply_markup=items_markup)
 
-        user_order_details = {
-            time.time(): {
-                'chat_id': message.chat.id,
-                'dish' : item_selected,
-                'number_of_dishes': num_of_items,
-            }
-        }
-
-        current_order.append((f'{item_selected}', num_of_items))
+        
+        # current_order[item_selected] = num_of_items
+        current_order[item_selected] = num_of_items
         print(f'current order is: {current_order}')
 
         print(f"{num_of_items} * {COMPLETE_MENU[item_selected]} {num_of_items*COMPLETE_MENU[item_selected]}")
         
 
+
+    elif user_message == 'Add more items':
+        # show_menu(message)
+
+        items = [
+            types.KeyboardButton(f'{item}') for item in MENU
+        ]
+
+        items_markup.add(*items)
+        canteen_bot.reply_to(message, text='🔻 Here are the categories in our menu 🔻', reply_markup=items_markup)
+    
+
+    elif user_message == 'This is my final order':
+        order_summary_text = 'Your order summary: \n\n'
+
+        for item in current_order:
+            order_summary_text += f'    {current_order[item]}x {item}\n'
+            current_bill += current_order[item]*COMPLETE_MENU[item]
+        
+
+        canteen_bot.reply_to(message, text=f'{order_summary_text}\nYour total bill is: ₹{current_bill}/-')
+
+        items = [
+            types.KeyboardButton('Cash'),
+            types.KeyboardButton('UPI'),
+        ]
+    
+        items_markup.add(*items)
+        canteen_bot.reply_to(message, text=f'How would you like to make payment?', reply_markup=items_markup)
+
+        # if user_message == 'UPI':
+        #     canteen_bot.send_photo(message.chat.id, "adobe_express.png")
+
+        # print(order_summary_text)
+        # print(f'your total bill is: {current_bill}')
+
+
+        user_order_details = {
+            time.time(): {
+                'chat_id': message.chat.id,
+                'dish' : current_order,
+            }
+        }
+
+
         try:
             with open("order_details.json", "r") as data_file:
                 data = json.load(data_file)
+
+        except json.decoder.JSONDecodeError:
+            with open("order_details.json", "w") as data_file:
+                # Saving updated data
+                json.dump(user_order_details, data_file, indent=4)
 
         except FileNotFoundError:
             with open("order_details.json", "w") as data_file:
@@ -152,38 +193,15 @@ def show_menu(message):
         finally:
             pass
 
+        order_placed = True
+        canteen_bot.stop_bot()
 
-        # user_message = str(user_message)
-
-    elif user_message == 'Add more items':
-        # show_menu(message)
-
-        items = [
-            types.KeyboardButton(f'{item}') for item in MENU
-        ]
-
-        items_markup.add(*items)
-        canteen_bot.reply_to(message, text='🔻 Here are the categories in our menu 🔻', reply_markup=items_markup)
-    
-        pass
-
-    elif user_message == 'This is my final order':
-        order_summary_text = 'Here is your list of orders: \n'
-
-        for item in current_order:
-            order_summary_text += f'{item[1]} {item[0]}s\n'
-            current_bill += item[1]*COMPLETE_MENU[item[0]]
-        
-
-        print(order_summary_text)
-        print(f'your total bill is: {current_bill}')
-
-        pass
         
     else:
         canteen_bot.reply_to(message, text='Invalid command')
 
 
-canteen_bot.polling()
+while not order_placed:
+    canteen_bot.polling()
 
 
