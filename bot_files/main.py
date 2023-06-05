@@ -73,32 +73,25 @@ def show_menu(message):
         print(f' this is message.strip: {user_message}')
         print(MENU[user_message])
 
-
         items = [
             types.KeyboardButton(f'{item}') for item in MENU[user_message]
         ]
-
         items_markup.add(*items)
-
         canteen_bot.reply_to(message, text=f'😋 Items in the category: {user_message} 😋', reply_markup=items_markup)
     
+
     elif user_message in COMPLETE_MENU:
-
         item_selected = user_message
-
         canteen_bot.reply_to(message, text=f'{item_selected} costs ₹{COMPLETE_MENU[item_selected]}/-')
 
         items = [
             types.KeyboardButton(f'{num}') for num in range(1, 11)
         ]
-
         items_markup.add(*items)
         canteen_bot.reply_to(message, text=f'How many {user_message}s would you like to order?', reply_markup=items_markup)
 
 
-
     elif user_message.isnumeric():
-        # print(f'user_message is {user_message} and its type is {type(user_message)}')
         num_of_items = int(user_message)
 
         print(f'do you want to order {user_message} {item_selected}s?')
@@ -112,26 +105,21 @@ def show_menu(message):
             types.KeyboardButton('Add more items'),
             types.KeyboardButton('This is my final order'),
         ]
-    
         items_markup.add(*items)
         canteen_bot.reply_to(message, text=f'What would like to do?', reply_markup=items_markup)
 
         
-        # current_order[item_selected] = num_of_items
         current_order[item_selected] = num_of_items
         print(f'current order is: {current_order}')
-
         print(f"{num_of_items} * {COMPLETE_MENU[item_selected]} {num_of_items*COMPLETE_MENU[item_selected]}")
         
 
 
     elif user_message == 'Add more items':
-        # show_menu(message)
 
         items = [
             types.KeyboardButton(f'{item}') for item in MENU
         ]
-
         items_markup.add(*items)
         canteen_bot.reply_to(message, text='🔻 Here are the categories in our menu 🔻', reply_markup=items_markup)
     
@@ -143,22 +131,14 @@ def show_menu(message):
             order_summary_text += f'    {current_order[item]}x {item}\n'
             current_bill += current_order[item]*COMPLETE_MENU[item]
         
-
         canteen_bot.reply_to(message, text=f'{order_summary_text}\nYour total bill is: ₹{current_bill}/-')
 
         items = [
             types.KeyboardButton('Cash'),
             types.KeyboardButton('UPI'),
         ]
-    
         items_markup.add(*items)
         canteen_bot.reply_to(message, text=f'How would you like to make payment?', reply_markup=items_markup)
-
-        # if user_message == 'UPI':
-        #     canteen_bot.send_photo(message.chat.id, "adobe_express.png")
-
-        # print(order_summary_text)
-        # print(f'your total bill is: {current_bill}')
 
 
         user_order_details = {
