@@ -37,8 +37,6 @@ def show_menu_categories(message):
     canteen_bot.reply_to(message, text='🔻 Here are the categories in our menu 🔻', reply_markup=markup) 
 
 
-
-
 @canteen_bot.message_handler(func=lambda msg: True)
 def show_menu(message):
 
@@ -68,9 +66,6 @@ def show_menu(message):
 
         item_selected = user_message
 
-        # items = [
-        #     types.KeyboardButton(f'{item}') for item in COMPLETE_MENU[user_message]
-        # ]
         canteen_bot.reply_to(message, text=f'{user_message} costs ₹{COMPLETE_MENU[user_message]}/-')
 
         items = [
@@ -100,24 +95,45 @@ def show_menu(message):
         canteen_bot.reply_to(message, text=f'What would like to do?', reply_markup=items_markup)
 
         user_order_details = {
-            'timestamp': time.time(),
-            'chat_id': message.chat.id,
-            'dish' : item_selected,
-            'number of dishes': num_of_items,
+            time.time(): {
+                'chat_id': message.chat.id,
+                'dish' : item_selected,
+                'number_of_dishes': num_of_items,
+            }
         }
 
         print(f"{num_of_items} * {COMPLETE_MENU[item_selected]} {num_of_items*COMPLETE_MENU[item_selected]}")
         
-        with open('order_details.json', 'a+') as file:
+        '''with open('order_details.json', 'a+') as file:
             try:
                 # data = json.load(file)
                 # print(data)
                 json.dump(user_order_details, file, indent=4)
                 data = json.load(file)
-                print(data)
+                data.update(user_order_details)
 
             except Exception as e:
                 print(e)
+'''
+
+        try:
+            with open("order_details.json", "r") as data_file:
+                data = json.load(data_file)
+
+        except FileNotFoundError:
+            with open("order_details.json", "w") as data_file:
+                # Saving updated data
+                json.dump(user_order_details, data_file, indent=4)
+
+        else:
+            # Updating old data with new data
+            data.update(user_order_details)
+
+            with open('order_details.json', 'w') as data_file:
+                json.dump(data, data_file, indent=4)
+
+        finally:
+            pass
 
 
     elif user_message == 'Add more items':
