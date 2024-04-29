@@ -21,7 +21,7 @@ Here are the commands that can help you place your order:
     /start
     /help
     /menu
-contact @NoobMaster_31 for issues or suggestions
+contact @NoobMaster_31 for any issues or suggestions
 '''
 
 @canteen_bot.message_handler(commands=['start', 'hello'])
@@ -56,6 +56,8 @@ def show_menu_categories(message):
     markup.add(hot_drink_button, cold_drink_button)
 
     canteen_bot.reply_to(message, text='🔻 Here are the categories in our menu 🔻', reply_markup=markup) 
+
+
 
 
 
@@ -173,9 +175,19 @@ def show_menu(message):
         finally:
             pass
 
-        order_placed = True
-        canteen_bot.stop_bot()
+        # order_placed = True
+        # canteen_bot.stop_bot()
 
+
+    elif user_message == 'UPI':
+        # file_path = "bot_files/images/frame.png"
+        # file_path = "https://miro.medium.com/v2/resize:fit:720/format:webp/1*OohqW5DGh9CQS4hLY5FXzA.png"
+        file_path = "https://i.imgur.com/4AHq3OD.png"
+        canteen_bot.send_photo(message.chat.id, file_path)
+        canteen_bot.reply_to(message, text='Kindly scan this QR code with any UPI app of your choice',)
+
+    elif user_message == "Cash":
+        canteen_bot.reply_to(message, text='Kindly handover the amount to the counter')
         
     else:
         canteen_bot.reply_to(message, text='Invalid command')
